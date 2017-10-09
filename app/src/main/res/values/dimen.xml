@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mg_0">0dp</dimen>
+    <dimen name="mg_8">8dp</dimen>
+    <dimen name="smile">50dp</dimen>
+</resources>

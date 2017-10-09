@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name" translatable="false">Štýlovanie</string>
+    <string name="smile_desc">Úsmev</string>
+    <string name="value">%d</string>
+    <string name="max_value">Dosiahnutá maximálna hodnota</string>
+    <string name="min_value">Dosiahnutá minimálna hodnota</string>
+    <string name="change_img">Zmeniť obrázok</string>
+</resources>

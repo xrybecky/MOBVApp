@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Layout</string>
+    <string name="smile_desc">Smile</string>
+    <string name="value">%d</string>
+    <string name="max_value">You reached maximum value</string>
+    <string name="min_value">You reached minimum value</string>
+</resources>
