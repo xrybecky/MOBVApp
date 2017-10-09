@@ -5,4 +5,8 @@
     <string name="value">%d</string>
     <string name="max_value">You reached maximum value</string>
     <string name="min_value">You reached minimum value</string>
+    <string name="change_img">Change image</string>
+    <string name="type_text">Type text</string>
+    <string name="send">Send</string>
+    <string name="empty_string">String is empty!</string>
 </resources>

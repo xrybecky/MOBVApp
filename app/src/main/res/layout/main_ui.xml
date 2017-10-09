@@ -4,8 +4,31 @@
         android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/inputTextToModify"
+                android:hint="@string/type_text"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/send"
+                android:onClick="modifyText"/>
+
+        </LinearLayout>
+
 
         <Button
             android:layout_width="wrap_content"

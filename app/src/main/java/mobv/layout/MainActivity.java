@@ -3,13 +3,12 @@ package mobv.layout;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,40 +19,63 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    // request codes
     static final int PICK_IMAGE_REQUEST = 1;
+    static final int MODIFIED_STRING_REQUEST = 2;
+
+    // Bundle keys
+    static final String MAIN_IMAGE_BUNDLE_KEY = "main_image_view";
+    static final String MAIN_NUMBER_KEY = "main_number";
+    static final String INPUT_TEXT_TO_MODIFY_KEY = "input_to_modify";
+    static final String INPUT_TEXT_TO_SAVE_KEY = "input_to_save";
 
     private int number;
 
-    public void pickImage(View view){
+    // --------------------------------
+    // HANDLE REQUESTS FROM ACTIVITIES
+    // --------------------------------
+    private void handlePickImageRequest(Intent data){
+        ImageView imageView = (ImageView)findViewById(R.id.leadImageView);
 
-        Intent pickImageIntent = new Intent(Intent.ACTION_PICK); //  MediaStore.Images.Media.INTERNAL_CONTENT_URI
-        pickImageIntent.setType("image/*");
-        startActivityForResult(pickImageIntent, PICK_IMAGE_REQUEST);
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if(requestCode == PICK_IMAGE_REQUEST){
-            Toast.makeText(this, "Image picked", Toast.LENGTH_SHORT).show();
-
-
-            ImageView imageView = (ImageView)findViewById(R.id.leadImageView);
-
-            InputStream input = null;
-            try {
+        InputStream input = null;
+        try {
+            if(data != null) {
                 input = getContentResolver().openInputStream(data.getData());
                 Bitmap bitmap = BitmapFactory.decodeStream(input);
                 imageView.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void plus(View view){
+    private void handleModifiedStringRequest(Intent data){
 
+        // restore modified string
+        Bundle bundle = data.getExtras();
+        String modifiedString = bundle.getString(ModifyTextActivity.MODIFIED_STRING_KEY);
+
+        // show restored string
+        if(modifiedString != null && !modifiedString.isEmpty()){
+            Toast.makeText(
+                    this,
+                    modifiedString,
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
+    }
+
+    // ---------------------
+    // BUTTON HANDLERS
+    // ---------------------
+
+    public void pickImage(View view){
+        Intent pickImageIntent = new Intent(Intent.ACTION_PICK); //  MediaStore.Images.Media.INTERNAL_CONTENT_URI
+        pickImageIntent.setType("image/*");
+        startActivityForResult(pickImageIntent, PICK_IMAGE_REQUEST);
+    }
+
+    public void plus(View view){
         if (this.number < 5){
             this.number++;
             printNumber();
@@ -64,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void minus(View view){
-
         if(this.number > 0){
             this.number--;
             printNumber();
@@ -74,22 +95,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void printNumber(){
-        TextView tv = (TextView)findViewById(R.id.number);
-        tv.setText(getString(R.string.value, this.number));
+    public void modifyText(View view){
+
+        // get text to modify
+        EditText editTextToModify = (EditText)findViewById(R.id.inputTextToModify);
+        String inputText = editTextToModify.getText().toString();
+
+        // check isEmpty
+        if(!inputText.isEmpty()){
+
+            // set & start ModifyTextActivity
+            Intent intent = new Intent(this, ModifyTextActivity.class);
+            intent.putExtra(INPUT_TEXT_TO_MODIFY_KEY, inputText);
+            startActivityForResult(intent, MODIFIED_STRING_REQUEST);
+
+        }else{
+            Toast.makeText(this, getString(R.string.empty_string), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
+
+
+
+    // ---------------------
+    // CONTENT FUNCTIONS
+    // ---------------------
     public void addSmile(){
+
         // create width, height params
         int width = (int)getResources().getDimension(R.dimen.smile);
         int height = (int)getResources().getDimension(R.dimen.smile);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
-//        params.setMargins(
-//                (int)getResources().getDimension(R.dimen.mg_8),
-//                (int)getResources().getDimension(R.dimen.mg_0),
-//                (int)getResources().getDimension(R.dimen.smile),
-//                (int)getResources().getDimension(R.dimen.mg_0)
-//        );
 
         // create & set imageView
         ImageView imageView = new ImageView(this);
@@ -100,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
         // add view to layout
         LinearLayout llSmiles = (LinearLayout)findViewById(R.id.llSmiles);
         llSmiles.addView(imageView);
+    }
+
+    public void printNumber(){
+        TextView tv = (TextView)findViewById(R.id.number);
+        tv.setText(getString(R.string.value, this.number));
     }
 
     public void removeSmile(){
@@ -119,6 +161,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void saveAppState(){
+
+    }
+
+    public void restoreAppState(Bundle savedInstanceState){
+        // restore main number
+        this.number = savedInstanceState.getInt(MAIN_NUMBER_KEY);
+        printNumber();
+        restoreSmiles();
+
+        // restore current main image
+        ImageView imageView = (ImageView)findViewById(R.id.leadImageView);
+        Bitmap bitmap = savedInstanceState.getParcelable("image");
+        if(bitmap != null){
+            imageView.setImageBitmap(bitmap);
+        }
+
+        // restore filled text
+        String inputText = savedInstanceState.getString(INPUT_TEXT_TO_SAVE_KEY);
+        if(inputText != null && !inputText.isEmpty()) {
+            EditText editText = (EditText) findViewById(R.id.inputTextToModify);
+            editText.setText(inputText);
+        }
+    }
+
+
+    // ---------------------
+    // OVERRIDES
+    // ---------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.i("M_LOG", "onStart");
-
     }
 
     @Override
@@ -157,9 +228,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("M_LOG", "onResume");
-
-        printNumber();
-        restoreSmiles();
     }
 
     @Override
@@ -167,7 +235,22 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.i("M_LOG", "onSaveInstanceState");
 
-        outState.putInt("number", this.number);
+        // save main number
+        outState.putInt(MAIN_NUMBER_KEY, this.number);
+
+        // save current main image
+        ImageView imageView = (ImageView)findViewById(R.id.leadImageView);
+        if(imageView != null){
+            BitmapDrawable bitmapDrawable = (BitmapDrawable)imageView.getDrawable();
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            outState.putParcelable("image", bitmap);
+        }
+
+        // save filled text
+        EditText editText = (EditText)findViewById(R.id.inputTextToModify);
+        String inputText = editText.getText().toString();
+        outState.putString(INPUT_TEXT_TO_SAVE_KEY, inputText);
+
     }
 
     @Override
@@ -175,6 +258,26 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         Log.i("M_LOG", "onRestoreInstanceState");
 
-        this.number = savedInstanceState.getInt("number");
+        restoreAppState(savedInstanceState);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // handle requestCode
+        switch (requestCode){
+
+            // picked image
+            case PICK_IMAGE_REQUEST:
+                handlePickImageRequest(data);
+                break;
+
+            // modified string by ModifyTextActivity
+            case MODIFIED_STRING_REQUEST:
+                handleModifiedStringRequest(data);
+                break;
+        }
+    }
+
+
 }

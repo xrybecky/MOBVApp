@@ -6,7 +6,7 @@
     android:gravity="center">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/leadImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -21,6 +21,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:padding="@dimen/mg_8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -29,7 +30,6 @@
 
         <include
             layout="@layout/main_ui"/>
-
 
         </LinearLayout>
 

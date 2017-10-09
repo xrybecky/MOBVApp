@@ -5,4 +5,7 @@
     <string name="max_value">Dosiahnutá maximálna hodnota</string>
     <string name="min_value">Dosiahnutá minimálna hodnota</string>
     <string name="change_img">Zmeniť obrázok</string>
+    <string name="type_text">Zadajte text</string>
+    <string name="send">Odoslať</string>
+    <string name="empty_string">Zadaný reťazec je prázdny!</string>
 </resources>
