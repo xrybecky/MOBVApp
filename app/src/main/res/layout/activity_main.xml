@@ -1,35 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/leadImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:contentDescription="@string/app_name"
         android:src="@drawable/androids" />
 
-    <LinearLayout
-        android:padding="@dimen/mg_8"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-    <include
-        layout="@layout/main_ui"/>
+        <LinearLayout
+            android:padding="@dimen/mg_8"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                layout="@layout/main_ui"/>
 
 
-    <LinearLayout
-        android:id="@+id/llSmiles"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/smile"
-        android:orientation="horizontal"/>
+            <LinearLayout
+                android:id="@+id/llSmiles"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/smile"
+                android:orientation="horizontal"/>
 
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        app:layout_anchor="@id/leadImageView"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_margin="16dp"
+        android:onClick="pickImage"
+        android:clickable="true"
+        android:src="@drawable/ic_camera"/>
+
+</android.support.design.widget.CoordinatorLayout>
